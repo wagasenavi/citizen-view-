@@ -1,0 +1,400 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+	<modelVersion>4.0.0</modelVersion>
+	<groupId>com.vetstoria</groupId>
+	<artifactId>parent</artifactId>
+	<version>0.0.1-SNAPSHOT</version>
+	<packaging>pom</packaging>
+	<name>parent</name>
+	<url>http://maven.apache.org</url>
+
+	<properties>
+		<project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
+		<used.wildfly.version>18.0.1.Final</used.wildfly.version>
+		<test.wildfly.version>18.0.1.Final</test.wildfly.version>
+		<deltaspike.version>1.7.1</deltaspike.version>
+		<swagger.version>2.0.10</swagger.version>
+		<jacoco.version>0.8.5</jacoco.version>
+		<jacoco.skip.instrument>true</jacoco.skip.instrument>
+	</properties>
+
+	<distributionManagement>
+		<snapshotRepository>
+			<id>nexus-snapshots</id>
+			<url>http://localhost:8081/repository/vetstoria-snapshots/</url>
+		</snapshotRepository>
+		<repository>
+			<id>nexus-releases</id>
+			<url>http://localhost:8081/repository/vetstoria-releases/</url>
+		</repository>
+	</distributionManagement>
+
+	<!-- download dependencies from Nexus-->
+	<repositories>
+		<repository>
+			<id>vetstoria-group</id>
+			<url>http://localhost:8081/repository/vetstoria-group/</url>
+		</repository>
+	</repositories>
+
+	<!-- publish project to Nexus-->
+	<dependencyManagement>
+		<dependencies>
+			<!-- OWN modules -->
+			<dependency>
+				<groupId>com.vetstoria</groupId>
+				<artifactId>domain</artifactId>
+				<version>${project.version}</version>
+			</dependency>
+
+			<dependency>
+				<groupId>com.vetstoria</groupId>
+				<artifactId>domain</artifactId>
+				<version>${project.version}</version>
+				<type>ejb</type>
+			</dependency>
+
+			<dependency>
+				<groupId>com.vetstoria</groupId>
+				<artifactId>business</artifactId>
+				<version>${project.version}</version>
+				<type>ejb</type>
+			</dependency>
+
+			<dependency>
+				<groupId>com.vetstoria</groupId>
+				<artifactId>business-api</artifactId>
+				<version>${project.version}</version>
+				<type>war</type>
+			</dependency>
+
+			<dependency>
+				<groupId>com.vetstoria</groupId>
+				<artifactId>ear</artifactId>
+				<version>${project.version}</version>
+				<type>ear</type>
+			</dependency>
+			<!-- end of OWN modules -->
+
+			<!-- wildlfly bom -->
+			<dependency>
+				<groupId>org.wildfly.bom</groupId>
+				<artifactId>wildfly-jakartaee8-with-tools</artifactId>
+				<version>${used.wildfly.version}</version>
+				<type>pom</type>
+				<scope>import</scope>
+			</dependency>
+			<!-- end wildlfly -->
+
+			<dependency>
+				<groupId>junit</groupId>
+				<artifactId>junit</artifactId>
+				<version>3.8.1</version>
+				<scope>test</scope>
+			</dependency>
+		</dependencies>
+	</dependencyManagement>
+
+	<build>
+		<finalName>parent</finalName>
+
+		<pluginManagement>
+			<plugins>
+
+				<!-- Maven compiler plugin -->
+				<plugin>
+					<artifactId>maven-compiler-plugin</artifactId>
+					<version>3.8.0</version>
+					<configuration>
+						<release>11</release>
+					</configuration>
+				</plugin>
+
+				<!-- Package EJB modules -->
+				<plugin>
+					<artifactId>maven-ejb-plugin</artifactId>
+					<version>2.5.1</version>
+					<configuration>
+						<ejbVersion>3.1</ejbVersion>
+					</configuration>
+				</plugin>
+
+				<!-- Package ear module -->
+				<plugin>
+					<artifactId>maven-ear-plugin</artifactId>
+					<version>2.10.1</version>
+					<configuration>
+						<defaultLibBundleDir>/lib</defaultLibBundleDir>
+						<modules>
+							<ejbModule>
+								<groupId>com.vetstoria</groupId>
+								<artifactId>business</artifactId>
+								<uri>business.jar</uri>
+							</ejbModule>
+
+							<ejbModule>
+								<groupId>com.vetstoria</groupId>
+								<artifactId>domain</artifactId>
+								<uri>domain.jar</uri>
+							</ejbModule>
+
+							<webModule>
+								<groupId>com.vetstoria</groupId>
+								<artifactId>business-api</artifactId>
+								<uri>business-api.war</uri>
+								<contextRoot>/api</contextRoot>
+							</webModule>
+
+						</modules>
+					</configuration>
+				</plugin>
+
+				<plugin>
+					<groupId>org.apache.maven.plugins</groupId>
+					<artifactId>maven-war-plugin</artifactId>
+					<version>3.2.2</version>
+				</plugin>
+
+				<plugin>
+					<groupId>com.vaadin</groupId>
+					<artifactId>vaadin-maven-plugin</artifactId>
+					<version>${vaadin.plugin.version}</version>
+				</plugin>
+
+				<!-- Maven wildfly deployment uses this plugin 1.0.2.Final-->
+				<plugin>
+					<groupId>org.wildfly.plugins</groupId>
+					<artifactId>wildfly-maven-plugin</artifactId>
+					<version>1.2.1.Final</version>
+					<configuration>
+						<skip>true</skip>
+					</configuration>
+				</plugin>
+
+				<plugin>
+					<groupId>org.apache.maven.plugins</groupId>
+					<artifactId>maven-dependency-plugin</artifactId>
+					<version>2.8</version>
+				</plugin>
+
+				<!-- Needed for maven release plugin for generate version number -->
+				<plugin>
+					<groupId>org.codehaus.mojo</groupId>
+					<artifactId>buildnumber-maven-plugin</artifactId>
+					<version>1.0-beta-1</version>
+					<executions>
+						<execution>
+							<phase>validate</phase>
+							<goals>
+								<goal>create</goal>
+							</goals>
+							<configuration>
+								<doCheck>false</doCheck>
+								<doUpdate>false</doUpdate>
+								<format>{0,number}</format>
+								<items>
+									<item>buildNumber0</item>
+								</items>
+							</configuration>
+						</execution>
+					</executions>
+
+				</plugin>
+				<!-- Needed for maven - release plugin -->
+				<plugin>
+					<groupId>org.apache.maven.plugins</groupId>
+					<artifactId>maven-javadoc-plugin</artifactId>
+					<version>2.10.3</version>
+					<configuration>
+						<additionalparam>-Xdoclint:none</additionalparam>
+						<failOnError>false</failOnError>
+					</configuration>
+				</plugin>
+
+				<!-- For releasing the application -->
+				<plugin>
+					<groupId>org.apache.maven.plugins</groupId>
+					<artifactId>maven-release-plugin</artifactId>
+					<version>2.5.3</version>
+				</plugin>
+				<!-- Liquibase Maven Plugin for database table setup -->
+				<plugin>
+					<groupId>org.liquibase</groupId>
+					<artifactId>liquibase-maven-plugin</artifactId>
+					<version>3.5.1</version>
+					<executions>
+						<execution>
+							<phase>process-resources</phase>
+							<goals>
+								<goal>update</goal>
+							</goals>
+						</execution>
+					</executions>
+				</plugin>
+
+				<!-- swagger plugin for REST service -->
+				<plugin>
+					<groupId>io.swagger.core.v3</groupId>
+					<artifactId>swagger-maven-plugin</artifactId>
+					<version>${swagger.version}</version>
+					<executions>
+						<execution>
+							<phase>package</phase>
+							<goals>
+								<goal>resolve</goal>
+							</goals>
+						</execution>
+					</executions>
+				</plugin>
+
+				<plugin>
+					<groupId>org.eclipse.m2e</groupId>
+					<artifactId>lifecycle-mapping</artifactId>
+					<version>1.0.0</version>
+					<configuration>
+						<lifecycleMappingMetadata>
+							<pluginExecutions>
+								<pluginExecution>
+									<pluginExecutionFilter>
+										<groupId>org.liquibase</groupId>
+										<artifactId>liquibase-maven-plugin</artifactId>
+										<versionRange>[3,)</versionRange>
+										<goals>
+											<goal>update</goal>
+										</goals>
+									</pluginExecutionFilter>
+									<action>
+										<ignore />
+									</action>
+								</pluginExecution>
+
+								<pluginExecution>
+									<pluginExecutionFilter>
+										<groupId>org.apache.maven.plugins</groupId>
+										<artifactId>maven-dependency-plugin</artifactId>
+										<versionRange>[2.1,)</versionRange>
+										<goals>
+											<goal>unpack</goal>
+										</goals>
+									</pluginExecutionFilter>
+									<action>
+										<ignore />
+									</action>
+								</pluginExecution>
+
+								<pluginExecution>
+									<pluginExecutionFilter>
+										<groupId>io.swagger.core.v3</groupId>
+										<artifactId>swagger-maven-plugin</artifactId>
+										<versionRange>[2,)</versionRange>
+										<goals>
+											<goal>resolve</goal>
+										</goals>
+									</pluginExecutionFilter>
+									<action>
+										<ignore />
+									</action>
+								</pluginExecution>
+
+							</pluginExecutions>
+						</lifecycleMappingMetadata>
+					</configuration>
+				</plugin>
+
+				<!-- Unit Test -->
+				<plugin>
+					<groupId>org.apache.maven.plugins</groupId>
+					<artifactId>maven-surefire-plugin</artifactId>
+					<version>2.19.1</version>
+				</plugin>
+
+				<!-- Integration Test -->
+				<plugin>
+					<groupId>org.apache.maven.plugins</groupId>
+					<artifactId>maven-failsafe-plugin</artifactId>
+					<version>2.18.1</version>
+				</plugin>
+
+				<!--  Code coverage -->
+				<plugin>
+					<groupId>org.jacoco</groupId>
+					<artifactId>jacoco-maven-plugin</artifactId>
+					<version>${jacoco.version}</version>
+					<executions>
+						<execution>
+							<id>prepare-agent</id>
+							<goals>
+								<goal>prepare-agent</goal>
+							</goals>
+						</execution>
+						<execution>
+							<id>report</id>
+							<goals>
+								<goal>report</goal>
+							</goals>
+						</execution>
+					</executions>
+				</plugin>
+
+			</plugins>
+		</pluginManagement>
+
+		<plugins>
+			<plugin>
+				<artifactId>maven-compiler-plugin</artifactId>
+			</plugin>
+
+			<plugin>
+				<groupId>org.jacoco</groupId>
+				<artifactId>jacoco-maven-plugin</artifactId>
+			</plugin>
+
+			<plugin>
+				<groupId>org.codehaus.mojo</groupId>
+				<artifactId>buildnumber-maven-plugin</artifactId>
+			</plugin>
+
+			<plugin>
+				<groupId>org.apache.maven.plugins</groupId>
+				<artifactId>maven-javadoc-plugin</artifactId>
+			</plugin>
+
+			<plugin>
+				<groupId>org.apache.maven.plugins</groupId>
+				<artifactId>maven-release-plugin</artifactId>
+			</plugin>
+
+			<plugin>
+				<groupId>org.codehaus.mojo</groupId>
+				<artifactId>versions-maven-plugin</artifactId>
+				<version>2.5</version>
+			</plugin>
+
+		</plugins>
+	</build>
+
+
+	<profiles>
+
+		<profile>
+			<id>all</id>
+			<activation>
+				<activeByDefault>true</activeByDefault>
+			</activation>
+			<modules>
+				<module>domain</module>
+				<module>business</module>
+				<module>business-api</module>
+				<module>ear</module>
+			</modules>
+		</profile>
+	</profiles>
+
+	<modules>
+		<module>business</module>
+		<module>business-api</module>
+		<module>domain</module>
+		<module>ear</module>
+	</modules>
+
+</project>

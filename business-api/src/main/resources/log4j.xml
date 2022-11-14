@@ -1,0 +1,32 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE log4j:configuration SYSTEM "log4j.dtd">
+<log4j:configuration xmlns:log4j="http://jakarta.apache.org/log4j/">
+
+    <appender name="AppConsole" class="org.apache.log4j.ConsoleAppender">
+        <param name="Target" value="System.err" />
+        <param name="Threshold" value="INFO" />
+        <param name="Encoding" value="ISO-8859-15" />
+        <layout class="org.apache.log4j.PatternLayout">
+            <param name="ConversionPattern"
+                value="%d{dd.MM.yyyy HH:mm:ss} %5p kontext.%c{1}:%L - %m%n" />
+        </layout>
+    </appender>
+    
+    <appender name="AppFile" class="org.apache.log4j.DailyRollingFileAppender">
+        <param name="File" value="${jboss.server.log.dir}/reppido.server.log" />
+        <param name="DatePattern" value=".yyyy-MM-dd" />
+        <param name="Threshold" value="DEBUG" />
+        <param name="Encoding" value="ISO-8859-15" />
+        <layout class="org.apache.log4j.PatternLayout">
+            <param name="ConversionPattern"
+                value="%d{dd.MM.yyyy HH:mm:ss} %5p kontext.%c{1}:%L - %m%n" />
+        </layout>
+    </appender>
+    
+    <root>
+        <level value="ERROR" />
+        <appender-ref ref="AppConsole" />
+        <appender-ref ref="AppFile" />
+    </root>
+    
+</log4j:configuration>
