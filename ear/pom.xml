@@ -1,0 +1,64 @@
+<?xml version="1.0"?>
+<project xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 https://maven.apache.org/xsd/maven-4.0.0.xsd" xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
+	<modelVersion>4.0.0</modelVersion>
+	<parent>
+		<groupId>com.vetstoria</groupId>
+		<artifactId>parent</artifactId>
+		<version>0.0.1-SNAPSHOT</version>
+	</parent>
+
+	<artifactId>ear</artifactId>
+	<packaging>ear</packaging>
+	<name>ear</name>
+	<description>Ear module</description>
+
+	<properties>
+		<project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
+	</properties>
+
+	<build>
+		<finalName>ear</finalName>
+		<plugins>
+			<plugin>
+				<artifactId>maven-ear-plugin</artifactId>
+			</plugin>
+			<plugin>
+				<groupId>org.wildfly.plugins</groupId>
+				<artifactId>wildfly-maven-plugin</artifactId>
+				<configuration>
+					<skip>false</skip>
+					<force>true</force>
+					<hostname>${wildfly.host}</hostname>
+					<port>${wildfly.port}</port>
+					<username>${wildfly.user}</username>
+					<password>${wildfly.password}</password>
+					<filename>ear.ear</filename>
+				</configuration>
+			</plugin>
+		</plugins>
+
+	</build>
+
+	<dependencies>
+		<!-- OWN modules -->
+		<dependency>
+			<groupId>com.vetstoria</groupId>
+			<artifactId>business</artifactId>
+			<type>ejb</type>
+		</dependency>
+
+		<dependency>
+			<groupId>com.vetstoria</groupId>
+			<artifactId>domain</artifactId>
+			<type>ejb</type>
+		</dependency>
+
+		<dependency>
+			<groupId>com.vetstoria</groupId>
+			<artifactId>business-api</artifactId>
+			<type>war</type>
+		</dependency>
+
+		<!-- end of OWN modules -->
+	</dependencies>
+</project>

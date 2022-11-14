@@ -1,0 +1,69 @@
+{
+  "resourcePackages": [
+    "nl.beheervisie.reppido.business.api.citizen.category",
+    "nl.beheervisie.reppido.business.api.citizen.report",
+    "nl.beheervisie.reppido.business.api.citizen.reporter",
+    "nl.beheervisie.reppido.business.api.citizen.settings",
+    "nl.beheervisie.reppido.business.api.citizen.location",
+    "nl.beheervisie.reppido.business.api.municipality.login",
+    "nl.beheervisie.reppido.business.api.municipality.grid",
+    "nl.beheervisie.reppido.business.api.municipality.report",
+    "nl.beheervisie.reppido.business.api.municipality.query",
+    "nl.beheervisie.reppido.business.api.municipality",
+    "nl.beheervisie.reppido.business.api.admin.user",
+    "nl.beheervisie.reppido.business.api.admin.department",
+    "nl.beheervisie.reppido.business.api.admin.category",
+    "nl.beheervisie.reppido.business.api.admin.settings",
+    "nl.beheervisie.reppido.business.api.admin.reportsource",
+    "nl.beheervisie.reppido.business.api.admin.archive",
+    "nl.beheervisie.reppido.business.api.admin.quickmessage",
+    "nl.beheervisie.reppido.domain.entity.mun.workarea"
+  ],
+  "ignoredRoutes": [],
+  "prettyPrint": true,
+  "cacheTTL": 0,
+  "openAPI": {
+    "servers": [
+      {
+        "url": "http://localhost/api/v1"
+      },
+      {
+        "url": "http://10.205.16.12/api/v1"
+      },
+      {
+        "url": "http://10.205.17.15/api/v1"
+      },
+      {
+        "url": "https://pilot.reppido.nl/api/v1"
+      }
+    ],
+    "info": {
+      "version": 1.0,
+      "title": "Reppido API",
+      "description": "API to use Reppido",
+      "contact": {
+        "email": "development@.beheervisie.nl"
+      },
+      "license": {
+        "name": "Apache 2.0",
+        "url": "http://www.apache.org/licenses/LICENSE-2.0.html"
+      }
+    },
+    "components": {
+      "securitySchemes": {
+        "bearerAuth": {
+          "type": "http",
+          "scheme": "bearer",
+          "bearerFormat": "JWT"
+        }
+      }
+    },
+    "security": [
+      {
+        "bearerAuth": []
+      }
+    ]
+  }
+}
+
+
