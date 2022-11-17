@@ -7,14 +7,24 @@
 		<version>0.0.1-SNAPSHOT</version>
 	</parent>
 
-	<artifactId>domain</artifactId>
-	<name>domain</name>
-	<url>http://maven.apache.org</url>
+
+  <artifactId>domain</artifactId>
+  <name>Domain</name>
+  <description>Domain module</description>
 
 	<properties>
 		<project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
 	</properties>
 
+  <build>
+    <finalName>domain</finalName>
+    <plugins>
+      <plugin>
+        <artifactId>maven-ejb-plugin</artifactId>
+      </plugin>
+    </plugins>
+  </build>
+  
 	<dependencies>
 		<!-- Java ee -->
 		<dependency>
@@ -49,10 +59,16 @@
 		</dependency>
 		<!-- End of hibernate modules-->
 
+		<!-- Common modules -->
+		<dependency>
+			<groupId>commons-codec</groupId>
+			<artifactId>commons-codec</artifactId>
+		</dependency>
+		<!--End of Common modules -->
+		
 		<dependency>
 			<groupId>org.slf4j</groupId>
 			<artifactId>slf4j-api</artifactId>
 		</dependency>
-
 	</dependencies>
 </project>
