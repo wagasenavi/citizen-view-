@@ -1,0 +1,46 @@
+<?xml version="1.0"?>
+<project xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 https://maven.apache.org/xsd/maven-4.0.0.xsd" xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
+	<modelVersion>4.0.0</modelVersion>
+	<parent>
+		<groupId>nl.citizen.view</groupId>
+		<artifactId>parent</artifactId>
+		<version>0.0.1-SNAPSHOT</version>
+	</parent>
+
+
+	<artifactId>database</artifactId>
+	<name>database</name>
+	<description>Municipality Database Project</description>
+
+	<properties>
+		<project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
+		<citizen.view.jdbc>jdbc:postgresql://localhost:5432/citizen_view</citizen.view.jdbc>
+		<citizen.view.jdbc.username>citizen_view</citizen.view.jdbc.username>
+		<citizen.view.jdbc.password>citizen_view123</citizen.view.jdbc.password>
+	</properties>
+
+	<build>
+		<finalName>business</finalName>
+		<plugins>
+			<!-- Liquibase maven plugin -->
+			<plugin>
+				<groupId>org.liquibase</groupId>
+				<artifactId>liquibase-maven-plugin</artifactId>
+				<configuration>
+					<url>${citizen.view.jdbc}</url>
+					<driver>org.postgresql.Driver</driver>
+					<username>${citizen.view.jdbc.username}</username>
+					<password>${citizen.view.jdbc.password}</password>
+					<changeLogFile>src/main/resources/changelog_citizen_view.xml</changeLogFile>
+				</configuration>
+			</plugin>
+		</plugins>
+	</build>
+
+	<dependencies>
+		<dependency>
+			<groupId>org.postgresql</groupId>
+			<artifactId>postgresql</artifactId>
+		</dependency>
+	</dependencies>
+</project>

@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8" standalone="no"?>
 <project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
 	<modelVersion>4.0.0</modelVersion>
-	<groupId>com.vetstoria</groupId>
+	<groupId>nl.citizen.view</groupId>
 	<artifactId>parent</artifactId>
 	<version>0.0.1-SNAPSHOT</version>
 	<packaging>pom</packaging>
@@ -21,19 +21,19 @@
 	<distributionManagement>
 		<snapshotRepository>
 			<id>nexus-snapshots</id>
-			<url>http://localhost:8081/repository/vetstoria-snapshots/</url>
+			<url>http://localhost:8081/repository/citizen-view-snapshots/</url>
 		</snapshotRepository>
 		<repository>
 			<id>nexus-releases</id>
-			<url>http://localhost:8081/repository/vetstoria-releases/</url>
+			<url>http://localhost:8081/repository/citizen-view-releases/</url>
 		</repository>
 	</distributionManagement>
 
 	<!-- download dependencies from Nexus-->
 	<repositories>
 		<repository>
-			<id>vetstoria-group</id>
-			<url>http://localhost:8081/repository/vetstoria-group/</url>
+			<id>citizen-view-group</id>
+			<url>http://localhost:8081/repository/citizen-view-group/</url>
 		</repository>
 	</repositories>
 
@@ -42,34 +42,34 @@
 		<dependencies>
 			<!-- OWN modules -->
 			<dependency>
-				<groupId>com.vetstoria</groupId>
+				<groupId>nl.citizen.view</groupId>
 				<artifactId>domain</artifactId>
 				<version>${project.version}</version>
 			</dependency>
 
 			<dependency>
-				<groupId>com.vetstoria</groupId>
+				<groupId>nl.citizen.view</groupId>
 				<artifactId>domain</artifactId>
 				<version>${project.version}</version>
 				<type>ejb</type>
 			</dependency>
 
 			<dependency>
-				<groupId>com.vetstoria</groupId>
+				<groupId>nl.citizen.view</groupId>
 				<artifactId>business</artifactId>
 				<version>${project.version}</version>
 				<type>ejb</type>
 			</dependency>
 
 			<dependency>
-				<groupId>com.vetstoria</groupId>
+				<groupId>nl.citizen.view</groupId>
 				<artifactId>business-api</artifactId>
 				<version>${project.version}</version>
 				<type>war</type>
 			</dependency>
 
 			<dependency>
-				<groupId>com.vetstoria</groupId>
+				<groupId>nl.citizen.view</groupId>
 				<artifactId>ear</artifactId>
 				<version>${project.version}</version>
 				<type>ear</type>
@@ -234,13 +234,6 @@
 			</dependency>
 
 			<dependency>
-				<groupId>org.hamcrest</groupId>
-				<artifactId>hamcrest-junit</artifactId>
-				<version>2.0.0.0</version>
-				<scope>test</scope>
-			</dependency>
-
-			<dependency>
 				<groupId>com.fasterxml.jackson.core</groupId>
 				<artifactId>jackson-annotations</artifactId>
 				<version>2.13.4</version>
@@ -281,19 +274,19 @@
 						<defaultLibBundleDir>/lib</defaultLibBundleDir>
 						<modules>
 							<ejbModule>
-								<groupId>com.vetstoria</groupId>
+								<groupId>nl.citizen.view</groupId>
 								<artifactId>business</artifactId>
 								<uri>business.jar</uri>
 							</ejbModule>
 
 							<ejbModule>
-								<groupId>com.vetstoria</groupId>
+								<groupId>nl.citizen.view</groupId>
 								<artifactId>domain</artifactId>
 								<uri>domain.jar</uri>
 							</ejbModule>
 
 							<webModule>
-								<groupId>com.vetstoria</groupId>
+								<groupId>nl.citizen.view</groupId>
 								<artifactId>business-api</artifactId>
 								<uri>business-api.war</uri>
 								<contextRoot>/api</contextRoot>
@@ -536,6 +529,7 @@
 				<activeByDefault>true</activeByDefault>
 			</activation>
 			<modules>
+			    <module>database</module>
 				<module>domain</module>
 				<module>business</module>
 				<module>business-api</module>
@@ -545,6 +539,7 @@
 	</profiles>
 
 	<modules>
+	    <module>database</module>
 		<module>business</module>
 		<module>business-api</module>
 		<module>domain</module>
