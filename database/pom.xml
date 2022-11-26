@@ -1,0 +1,46 @@
+<?xml version="1.0"?>
+<project xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 https://maven.apache.org/xsd/maven-4.0.0.xsd" xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
+	<modelVersion>4.0.0</modelVersion>
+	<parent>
+		<groupId>com.vetstoria</groupId>
+		<artifactId>parent</artifactId>
+		<version>0.0.1-SNAPSHOT</version>
+	</parent>
+
+
+	<artifactId>database</artifactId>
+	<name>database</name>
+	<description>Municipality Database Project</description>
+
+	<properties>
+		<project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
+		<vetstoria.jdbc>jdbc:postgresql://localhost:5432/vetstoria</vetstoria.jdbc>
+		<vetstoria.jdbc.username>vetstoria</vetstoria.jdbc.username>
+		<vetstoria.jdbc.password>vetstoria123</vetstoria.jdbc.password>
+	</properties>
+
+	<build>
+		<finalName>business</finalName>
+		<plugins>
+			<!-- Liquibase maven plugin -->
+			<plugin>
+				<groupId>org.liquibase</groupId>
+				<artifactId>liquibase-maven-plugin</artifactId>
+				<configuration>
+					<url>${vetstoria.jdbc}</url>
+					<driver>org.postgresql.Driver</driver>
+					<username>${vetstoria.jdbc.username}</username>
+					<password>${vetstoria.jdbc.password}</password>
+					<changeLogFile>src/main/resources/changelog_vetstoria.xml</changeLogFile>
+				</configuration>
+			</plugin>
+		</plugins>
+	</build>
+
+	<dependencies>
+		<dependency>
+			<groupId>org.postgresql</groupId>
+			<artifactId>postgresql</artifactId>
+		</dependency>
+	</dependencies>
+</project>

@@ -1,213 +1,331 @@
 <?xml version="1.0"?>
-<project xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 https://maven.apache.org/xsd/maven-4.0.0.xsd" xmlns="http://maven.apache.org/POM/4.0.0"
-    xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
-  <modelVersion>4.0.0</modelVersion>
-  <parent>
-    <groupId>com.vetstoria</groupId>
-    <artifactId>parent</artifactId>
-    <version>0.0.1-SNAPSHOT</version>
-  </parent>
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+	<modelVersion>4.0.0</modelVersion>
+	<parent>
+		<groupId>com.vetstoria</groupId>
+		<artifactId>parent</artifactId>
+		<version>0.0.1-SNAPSHOT</version>
+	</parent>
 
-  <artifactId>business</artifactId>
-  <name>business</name>
-  <description>business layer module</description>
-  <url>http://maven.apache.org</url>
-  
-  <properties>
-    <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
-  </properties>
+	<artifactId>business</artifactId>
+	<name>business</name>
+	<description>Business layer module</description>
 
-  <build>
-    <finalName>business</finalName>
-    <plugins>
-      <plugin>
-        <artifactId>maven-ejb-plugin</artifactId>
-      </plugin>
-    </plugins>
-  </build>
-  
-  <dependencies>
-      <!-- Own modules -->
-    <dependency>
-      	<groupId>com.vetstoria</groupId>
-      	<artifactId>domain</artifactId>
-    </dependency>
+	<properties>
+		<project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
+	</properties>
 
-    <!-- End Own modules -->
+	<build>
+		<finalName>business</finalName>
+		<plugins>
+			<plugin>
+				<artifactId>maven-ejb-plugin</artifactId>
+			</plugin>
+		</plugins>
+	</build>
+	
+	<profiles>
+		<!-- Arquillian WildFly managed profile -->
+		<profile>
+			<id>wildfly-managed</id>
+			<activation>
+				<activeByDefault>true</activeByDefault>
+			</activation>
+			<dependencies>
+				<dependency>
+					<groupId>org.wildfly.arquillian</groupId>
+					<artifactId>wildfly-arquillian-container-managed</artifactId>
+				</dependency>
+			</dependencies>
+			<build>
+				<plugins>
+					<plugin>
+						<groupId>org.apache.maven.plugins</groupId>
+						<artifactId>maven-dependency-plugin</artifactId>
+						<executions>
+							<execution>
+								<id>unpack</id>
+								<phase>process-test-classes</phase>
+								<goals>
+									<goal>unpack</goal>
+								</goals>
+								<configuration>
+									<artifactItems>
+										<artifactItem>
+											<groupId>org.wildfly</groupId>
+											<artifactId>wildfly-dist</artifactId>
+											<version>${test.wildfly.version}</version>
+											<type>zip</type>
+											<overWrite>false</overWrite>
+											<outputDirectory>${project.build.directory}</outputDirectory>
+										</artifactItem>
+									</artifactItems>
+								</configuration>
+							</execution>
+						</executions>
+					</plugin>
+					<plugin>
+						<groupId>org.apache.maven.plugins</groupId>
+						<artifactId>maven-failsafe-plugin</artifactId>
+						<executions>
+							<execution>
+								<goals>
+									<goal>integration-test</goal>
+									<goal>verify</goal>
+								</goals>
+								<configuration>
+									<argLine>${failsafe.argLine}</argLine>
+									<systemPropertyVariables>
+										<java.util.logging.manager>org.jboss.logmanager.LogManager</java.util.logging.manager>
+										<jboss.socket.binding.port-offset>10000</jboss.socket.binding.port-offset>
 
-    <!-- JDBC -->
-	<dependency>
-	    <groupId>org.postgresql</groupId>
-	    <artifactId>postgresql</artifactId>
-	</dependency>
-  
-	<dependency>
-	    <groupId>com.h2database</groupId>
-	    <artifactId>h2</artifactId>
-	</dependency>
-    <!-- End of JDBC -->
-    
-    <!-- Java ee -->
-    <dependency>
-		<groupId>org.jboss.spec.javax.ejb</groupId>
-		<artifactId>jboss-ejb-api_3.2_spec</artifactId>
-		<scope>provided</scope>
-	</dependency>
+										<jacoco-agent.destfile>${project.build.directory}/jacoco-it.exec</jacoco-agent.destfile>
+									</systemPropertyVariables>
+									<redirectTestOutputToFile>false</redirectTestOutputToFile>
+									<reportsDirectory>${project.build.directory}/surefire-reports</reportsDirectory>
+								</configuration>
+							</execution>
+						</executions>
+					</plugin>
+				</plugins>
+			</build>
+		</profile>
+
+		<!-- Arquillian WildFly remote profile -->
+		<profile>
+			<id>wildfly-remote</id>
+			<dependencies>
+
+				<dependency>
+					<groupId>org.wildfly.arquillian</groupId>
+					<artifactId>wildfly-arquillian-container-remote</artifactId>
+				</dependency>
+
+			</dependencies>
+		</profile>
+	</profiles>
+
+	<dependencies>
+		<!-- Own modules -->
+		<dependency>
+			<groupId>com.vetstoria</groupId>
+			<artifactId>domain</artifactId>
+		</dependency>
+		<!-- End Own modules -->
+
+		<!-- Hibernate modules-->
+		<dependency>
+			<groupId>org.hibernate</groupId>
+			<artifactId>hibernate-core</artifactId>
+		</dependency>
+
+		<dependency>
+			<groupId>org.hibernate</groupId>
+			<artifactId>hibernate-entitymanager</artifactId>
+		</dependency>
+		<!-- End Hibernate modules-->
+
+		<!-- JDBC -->
+		<dependency>
+			<groupId>org.postgresql</groupId>
+			<artifactId>postgresql</artifactId>
+		</dependency>
+
+		<dependency>
+			<groupId>com.h2database</groupId>
+			<artifactId>h2</artifactId>
+		</dependency>
+		<!-- End of JDBC -->
+
+		<!-- Java ee -->
+		<dependency>
+			<groupId>org.jboss.spec.javax.ejb</groupId>
+			<artifactId>jboss-ejb-api_3.2_spec</artifactId>
+			<scope>provided</scope>
+		</dependency>
+
+		<dependency>
+			<groupId>jakarta.persistence</groupId>
+			<artifactId>jakarta.persistence-api</artifactId>
+			<scope>provided</scope>
+		</dependency>
+
+		<dependency>
+			<groupId>com.sun.activation</groupId>
+			<artifactId>jakarta.activation</artifactId>
+		</dependency>
+
+		<dependency>
+			<groupId>org.jboss.spec.javax.interceptor</groupId>
+			<artifactId>jboss-interceptors-api_1.2_spec</artifactId>
+		</dependency>
+
+		<dependency>
+			<groupId>org.jboss.ejb3</groupId>
+			<artifactId>jboss-ejb3-ext-api</artifactId>
+		</dependency>
+
+		<dependency>
+			<groupId>org.jboss.spec.javax.annotation</groupId>
+			<artifactId>jboss-annotations-api_1.3_spec</artifactId>
+		</dependency>
+		<!-- Java ee -->
+
+		<!-- Liquibase -->
+		<dependency>
+			<groupId>org.liquibase</groupId>
+			<artifactId>liquibase-core</artifactId>
+		</dependency>
+
+		<dependency>
+			<groupId>com.mattbertolini</groupId>
+			<artifactId>liquibase-slf4j</artifactId>
+		</dependency>
+
+		<dependency>
+			<groupId>org.liquibase.ext</groupId>
+			<artifactId>liquibase-oracle</artifactId>
+		</dependency>
+		<!-- End of Liquibase -->
+
+
+		<!-- Delta spike used for configuration injection -->
+		<dependency>
+			<groupId>org.apache.deltaspike.core</groupId>
+			<artifactId>deltaspike-core-api</artifactId>
+			<scope>compile</scope>
+		</dependency>
+
+		<dependency>
+			<groupId>org.apache.deltaspike.core</groupId>
+			<artifactId>deltaspike-core-impl</artifactId>
+			<scope>runtime</scope>
+		</dependency>
+
+		<dependency>
+			<groupId>org.apache.deltaspike.cdictrl</groupId>
+			<artifactId>deltaspike-cdictrl-weld</artifactId>
+			<scope>runtime</scope>
+		</dependency>
+		<!-- End of delta spike used for configuration injection -->
+
+
+		<!-- Test -->
+		<dependency>
+			<groupId>junit</groupId>
+			<artifactId>junit</artifactId>
+		</dependency>
+
+		<dependency>
+			<groupId>org.dbunit</groupId>
+			<artifactId>dbunit</artifactId>
+		</dependency>
+
+		<dependency>
+			<groupId>org.mockito</groupId>
+			<artifactId>mockito-core</artifactId>
+		</dependency>
+
+		<dependency>
+			<groupId>org.powermock</groupId>
+			<artifactId>powermock-api-mockito2</artifactId>
+			<version>2.0.5</version>
+			<scope>test</scope>
+		</dependency>
+
+		<dependency>
+			<groupId>org.powermock</groupId>
+			<artifactId>powermock-module-junit4</artifactId>
+			<version>2.0.5</version>
+			<scope>test</scope>
+		</dependency>
+
+		<dependency>
+			<groupId>org.hamcrest</groupId>
+			<artifactId>hamcrest-junit</artifactId>
+			<scope>test</scope>
+		</dependency>
+		<!-- End of test -->
+
+		<!-- Arquillian -->
+		<dependency>
+			<groupId>org.jboss.arquillian.junit</groupId>
+			<artifactId>arquillian-junit-container</artifactId>
+		</dependency>
+
+		<dependency>
+			<groupId>org.jboss.arquillian.protocol</groupId>
+			<artifactId>arquillian-protocol-servlet</artifactId>
+		</dependency>
+
+		<dependency>
+			<groupId>org.jboss.shrinkwrap.resolver</groupId>
+			<artifactId>shrinkwrap-resolver-impl-maven</artifactId>
+		</dependency>
+
+		<dependency>
+			<groupId>org.jboss.shrinkwrap.resolver</groupId>
+			<artifactId>shrinkwrap-resolver-impl-maven-archive</artifactId>
+		</dependency>
+
+		<dependency>
+			<groupId>org.jboss.arquillian.extension</groupId>
+			<artifactId>arquillian-persistence-dbunit</artifactId>
+			<version>1.0.0.Alpha7</version>
+		</dependency>
+		<!-- End of Arquillian -->
+
+		<!-- Common modules -->
+		<dependency>
+			<groupId>org.wildfly.core</groupId>
+			<artifactId>wildfly-controller-client</artifactId>
+		</dependency>
+
+		<dependency>
+			<groupId>net.coobird</groupId>
+			<artifactId>thumbnailator</artifactId>
+		</dependency>
+
+		<dependency>
+			<groupId>org.jboss.resteasy</groupId>
+			<artifactId>resteasy-client</artifactId>
+		</dependency>
+
+		<dependency>
+			<groupId>com.fasterxml.jackson.core</groupId>
+			<artifactId>jackson-databind</artifactId>
+		</dependency>
+
+		<!--End of Common modules -->
+
+		<!-- Adding jacoco agent into class path -->
+		<dependency>
+			<groupId>org.jacoco</groupId>
+			<artifactId>org.jacoco.agent</artifactId>
+			<classifier>runtime</classifier>
+			<scope>test</scope>
+		</dependency>
+
+		<dependency>
+			<groupId>com.sun.mail</groupId>
+			<artifactId>jakarta.mail</artifactId>
+		</dependency>
+
+		<dependency>
+			<groupId>org.freemarker</groupId>
+			<artifactId>freemarker</artifactId>
+		</dependency>
+
+		<dependency>
+			<groupId>org.apache.poi</groupId>
+			<artifactId>poi</artifactId>
+		</dependency>
+
+		<dependency>
+			<groupId>org.apache.poi</groupId>
+			<artifactId>poi-ooxml</artifactId>
+		</dependency>
 		
-	<dependency>
-		<groupId>jakarta.persistence</groupId>
-		<artifactId>jakarta.persistence-api</artifactId>
-		<scope>provided</scope>
-	</dependency>
-	
-	<dependency>
-      	<groupId>com.sun.activation</groupId>
-      	<artifactId>jakarta.activation</artifactId>
-    </dependency>
-    
-    <dependency>
-        <groupId>org.jboss.spec.javax.interceptor</groupId>
-        <artifactId>jboss-interceptors-api_1.2_spec</artifactId>
-    </dependency>
-      
-    <dependency>
-        <groupId>org.jboss.ejb3</groupId>
-        <artifactId>jboss-ejb3-ext-api</artifactId>
-    </dependency>
-    
-    <dependency>
-        <groupId>org.jboss.spec.javax.annotation</groupId>
-        <artifactId>jboss-annotations-api_1.3_spec</artifactId>
-    </dependency>  
-    <!-- Java ee -->
-    
-    <!-- Liquibase -->
-    <dependency>
-      	<groupId>org.liquibase</groupId>
-      	<artifactId>liquibase-core</artifactId>
-    </dependency>
-    
-    <dependency>
-      	<groupId>com.mattbertolini</groupId>
-      	<artifactId>liquibase-slf4j</artifactId>
-    </dependency>
-    
-    <dependency>
-      	<groupId>org.liquibase.ext</groupId>
-      	<artifactId>liquibase-oracle</artifactId>
-    </dependency>
-	<!-- End of Liquibase -->
-	
-	
-    <!-- Delta spike used for configuration injection -->
-    <dependency>
-      	<groupId>org.apache.deltaspike.core</groupId>
-      	<artifactId>deltaspike-core-api</artifactId>
-      	<scope>compile</scope>
-    </dependency>
+	</dependencies>
 
-    <dependency>
-      	<groupId>org.apache.deltaspike.core</groupId>
-      	<artifactId>deltaspike-core-impl</artifactId>
-      	<scope>runtime</scope>
-    </dependency>
-
-    <dependency>
-      	<groupId>org.apache.deltaspike.cdictrl</groupId>
-      	<artifactId>deltaspike-cdictrl-weld</artifactId>
-      	<scope>runtime</scope>
-    </dependency>
-	<!-- End of delta spike used for configuration injection -->
-
-	
-    <!-- Test -->
-    <dependency>
-      	<groupId>junit</groupId>
-      	<artifactId>junit</artifactId>
-    </dependency>
-    
-    <dependency>
-	    <groupId>org.dbunit</groupId>
-	    <artifactId>dbunit</artifactId>
-	</dependency>
-	
-	<dependency>
-		<groupId>org.mockito</groupId>
-		<artifactId>mockito-core</artifactId>
-    </dependency>
-    
-    <dependency>
-      	<groupId>org.powermock</groupId>
-      	<artifactId>powermock-api-mockito2</artifactId>
-      	<version>2.0.5</version>
-      	<scope>test</scope>
-    </dependency>
-    
-    <dependency>
-      	<groupId>org.powermock</groupId>
-      	<artifactId>powermock-module-junit4</artifactId>
-      	<version>2.0.5</version>
-      	<scope>test</scope>
-    </dependency>
-    
-    <dependency>
-	    <groupId>org.hamcrest</groupId>
-	    <artifactId>hamcrest-junit</artifactId>
-	    <scope>test</scope>
-	</dependency>
-    <!-- End of test -->
-    
-    <!-- Arquillian -->
-    <dependency>
-        <groupId>org.jboss.arquillian.junit</groupId>
-        <artifactId>arquillian-junit-container</artifactId>                
-    </dependency>
-    
-    <dependency>
-        <groupId>org.jboss.arquillian.protocol</groupId>
-        <artifactId>arquillian-protocol-servlet</artifactId>
-    </dependency>	
-    
-    <dependency>
-	    <groupId>org.jboss.shrinkwrap.resolver</groupId>
-	    <artifactId>shrinkwrap-resolver-impl-maven</artifactId>
-	</dependency>
-  
-	<dependency>
-		<groupId>org.jboss.shrinkwrap.resolver</groupId>
-		<artifactId>shrinkwrap-resolver-impl-maven-archive</artifactId>
-	</dependency> 
-	
-	<dependency>
-		<groupId>org.jboss.arquillian.extension</groupId>
-		<artifactId>arquillian-persistence-dbunit</artifactId>
-		<version>1.0.0.Alpha7</version>
-	</dependency>
-   <!-- End of Arquillian -->
-
-    <!-- Common modules -->
-    <dependency>
-        <groupId>org.wildfly.core</groupId>
-        <artifactId>wildfly-controller-client</artifactId>
-    </dependency>
-    
-	<dependency>
-  		<groupId>net.coobird</groupId>
-  		<artifactId>thumbnailator</artifactId>
-	</dependency>
-    
-    <dependency>
-      	<groupId>org.jboss.resteasy</groupId>
-      	<artifactId>resteasy-client</artifactId>
-  	</dependency>
-
-    <dependency>
-	    <groupId>com.fasterxml.jackson.core</groupId>
-	    <artifactId>jackson-databind</artifactId>
-	</dependency>
-	
-	<!--End of Common modules -->
-
-  </dependencies>
-    
 </project>

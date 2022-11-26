@@ -536,6 +536,7 @@
 				<activeByDefault>true</activeByDefault>
 			</activation>
 			<modules>
+			    <module>database</module>
 				<module>domain</module>
 				<module>business</module>
 				<module>business-api</module>
@@ -545,6 +546,7 @@
 	</profiles>
 
 	<modules>
+	    <module>database</module>
 		<module>business</module>
 		<module>business-api</module>
 		<module>domain</module>
