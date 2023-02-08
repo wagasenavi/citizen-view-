@@ -32,6 +32,7 @@
 					<username>${citizen.view.jdbc.username}</username>
 					<password>${citizen.view.jdbc.password}</password>
 					<changeLogFile>src/main/resources/changelog_citizen_view.xml</changeLogFile>
+
 				</configuration>
 			</plugin>
 		</plugins>
